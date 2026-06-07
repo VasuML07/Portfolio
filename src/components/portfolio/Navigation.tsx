@@ -87,9 +87,9 @@ export default function Navigation() {
             {/* Logo */}
             <button
               onClick={() => scrollToSection("#home")}
-              className="hover:opacity-80 transition-opacity duration-300"
+              className="font-mono text-sm font-medium tracking-tight text-foreground/80 hover:text-foreground transition-colors duration-300"
             >
-              <img src="/logo-icon.png" alt="Avinash | Software Engineer" className="h-7 w-auto object-contain" />
+              AVINASH<span className="text-foreground/40">.</span>
             </button>
 
             {/* Desktop nav */}
@@ -135,8 +135,8 @@ export default function Navigation() {
                   <SheetContent side="right" className="w-64 bg-background/95 backdrop-blur-xl border-border/30 p-0">
                     <SheetTitle className="sr-only">Navigation</SheetTitle>
                     <div className="flex flex-col p-6 gap-1">
-                      <div className="mb-6">
-                        <img src="/logo-icon.png" alt="Avinash | Software Engineer" className="h-5 w-auto object-contain" />
+                      <div className="font-mono text-sm font-medium tracking-tight mb-6 text-foreground/80">
+                        AVINASH<span className="text-foreground/40">.</span>
                       </div>
                       {NAV_LINKS.map((link, i) => (
                         <motion.button
