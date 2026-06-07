@@ -2,8 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Brain, Cpu, GitBranch, GraduationCap } from "lucide-react";
-import { staggerContainer, staggerItem } from "@/lib/animations";
+import { staggerContainer, staggerItemSubtle } from "@/lib/animations";
 
 interface HighlightCard {
   icon: React.ReactNode;
@@ -13,22 +12,22 @@ interface HighlightCard {
 
 const HIGHLIGHTS: HighlightCard[] = [
   {
-    icon: <Cpu className="h-5 w-5 text-emerald-400" />,
+    icon: <span className="text-foreground/30">⚡</span>,
     value: "120+",
     label: "LeetCode Problems Solved",
   },
   {
-    icon: <GitBranch className="h-5 w-5 text-emerald-400" />,
+    icon: <span className="text-foreground/30">⎇</span>,
     value: "18",
     label: "GitHub Repositories",
   },
   {
-    icon: <Brain className="h-5 w-5 text-emerald-400" />,
+    icon: <span className="text-foreground/30">◆</span>,
     value: "From Scratch",
     label: "Neural Network Built",
   },
   {
-    icon: <GraduationCap className="h-5 w-5 text-emerald-400" />,
+    icon: <span className="text-foreground/30">◈</span>,
     value: "AI / ML",
     label: "Student @ VIT-AP University",
   },
@@ -39,8 +38,8 @@ export default function Highlights() {
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   return (
-    <section ref={sectionRef} className="py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-8">
+    <section id="highlights" ref={sectionRef} className="py-24 sm:py-32">
+      <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section label */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -48,7 +47,7 @@ export default function Highlights() {
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          <span className="font-mono text-xs text-muted-foreground tracking-widest uppercase">
+          <span className="font-mono text-xs text-foreground/35 tracking-[0.15em] uppercase">
             Highlights
           </span>
         </motion.div>
@@ -63,15 +62,16 @@ export default function Highlights() {
           {HIGHLIGHTS.map((item, index) => (
             <motion.div
               key={index}
-              variants={staggerItem}
-              whileHover={{ y: -3, transition: { type: "spring", damping: 20, stiffness: 200 } }}
-              className="relative group p-6 rounded-2xl border border-border/50 bg-card/30 hover:border-border transition-colors glow-border"
+              variants={staggerItemSubtle}
+              whileHover={{ y: 1 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="group p-6 rounded-2xl border border-border/40 hover:border-border/70 bg-card/30 transition-colors duration-300"
             >
-              <div className="mb-4">{item.icon}</div>
+              <div className="mb-4 text-sm">{item.icon}</div>
               <div className="text-3xl sm:text-4xl font-bold tracking-tight mb-1">
                 {item.value}
               </div>
-              <div className="text-sm text-muted-foreground leading-relaxed">
+              <div className="text-sm text-foreground/40 leading-relaxed">
                 {item.label}
               </div>
             </motion.div>

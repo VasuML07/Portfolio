@@ -10,12 +10,9 @@ import {
   ExternalLink,
   Trophy,
   BarChart3,
-  AlertCircle,
-  RefreshCw,
   Code2,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 
@@ -98,7 +95,7 @@ function formatTimeAgo(timestamp: string): string {
 }
 
 function GitHubSection() {
-  const { data, isLoading, isError, refetch, isFetching } = useQuery<GitHubData>({
+  const { data, isLoading, isError } = useQuery<GitHubData>({
     queryKey: ["github"],
     queryFn: async () => {
       const res = await fetch("/api/github");
@@ -108,22 +105,11 @@ function GitHubSection() {
     staleTime: 1000 * 60 * 30,
   });
 
+  // Silently handle error — show minimal note
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <AlertCircle className="h-8 w-8 text-muted-foreground mb-3" />
-        <p className="text-sm text-muted-foreground mb-4">
-          Failed to load GitHub data
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => refetch()}
-          disabled={isFetching}
-        >
-          <RefreshCw className={`mr-2 h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
-          Retry
-        </Button>
+      <div className="py-12 text-center">
+        <p className="text-sm text-foreground/25 font-mono">GitHub data temporarily unavailable</p>
       </div>
     );
   }
@@ -156,18 +142,18 @@ function GitHubSection() {
       <div className="grid grid-cols-3 gap-4">
         <div className="p-4 rounded-xl border border-border/30 bg-card/20">
           <div className="text-2xl font-bold">{data.stats.totalRepos}</div>
-          <div className="text-xs text-muted-foreground font-mono">Repositories</div>
+          <div className="text-xs text-foreground/35 font-mono">Repositories</div>
         </div>
         <div className="p-4 rounded-xl border border-border/30 bg-card/20">
           <div className="text-2xl font-bold">{data.stats.totalStars}</div>
-          <div className="text-xs text-muted-foreground font-mono">
+          <div className="text-xs text-foreground/35 font-mono">
             <Star className="inline h-3 w-3 mr-1" />
             Stars
           </div>
         </div>
         <div className="p-4 rounded-xl border border-border/30 bg-card/20">
           <div className="text-2xl font-bold">{Object.keys(data.stats.languages).length}</div>
-          <div className="text-xs text-muted-foreground font-mono">Languages</div>
+          <div className="text-xs text-foreground/35 font-mono">Languages</div>
         </div>
       </div>
 
@@ -182,10 +168,10 @@ function GitHubSection() {
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border/30 bg-card/20"
             >
               <div
-                className={`w-2 h-2 rounded-full ${LANGUAGE_COLORS[lang] || "bg-muted-foreground"}`}
+                className={`w-2 h-2 rounded-full ${LANGUAGE_COLORS[lang] || "bg-foreground/30"}`}
               />
               <span className="text-xs font-mono">{lang}</span>
-              <span className="text-xs text-muted-foreground">{count}</span>
+              <span className="text-xs text-foreground/35">{count}</span>
             </div>
           ))}
       </div>
@@ -210,19 +196,19 @@ function GitHubSection() {
                     {repo.language && (
                       <span className="shrink-0 flex items-center gap-1">
                         <div
-                          className={`w-2 h-2 rounded-full ${LANGUAGE_COLORS[repo.language] || "bg-muted-foreground"}`}
+                          className={`w-2 h-2 rounded-full ${LANGUAGE_COLORS[repo.language] || "bg-foreground/30"}`}
                         />
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-foreground/35">
                           {repo.language}
                         </span>
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-foreground/40 line-clamp-2 leading-relaxed">
                     {repo.description}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 shrink-0 text-xs text-muted-foreground">
+                <div className="flex items-center gap-3 shrink-0 text-xs text-foreground/35">
                   {(repo.stars > 0 || repo.forks > 0) && (
                     <div className="flex items-center gap-2">
                       {repo.stars > 0 && (
@@ -255,7 +241,7 @@ function GitHubSection() {
 }
 
 function LeetCodeSection() {
-  const { data, isLoading, isError, refetch, isFetching } = useQuery<LeetCodeData>({
+  const { data, isLoading, isError } = useQuery<LeetCodeData>({
     queryKey: ["leetcode"],
     queryFn: async () => {
       const res = await fetch("/api/leetcode");
@@ -267,20 +253,8 @@ function LeetCodeSection() {
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <AlertCircle className="h-8 w-8 text-muted-foreground mb-3" />
-        <p className="text-sm text-muted-foreground mb-4">
-          Failed to load LeetCode data
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => refetch()}
-          disabled={isFetching}
-        >
-          <RefreshCw className={`mr-2 h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
-          Retry
-        </Button>
+      <div className="py-12 text-center">
+        <p className="text-sm text-foreground/25 font-mono">LeetCode data temporarily unavailable</p>
       </div>
     );
   }
@@ -311,22 +285,22 @@ function LeetCodeSection() {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4">
         <div className="p-4 rounded-xl border border-border/30 bg-card/20">
-          <div className="text-2xl font-bold text-emerald-400">
+          <div className="text-2xl font-bold">
             {data.problems.easy}
           </div>
-          <div className="text-xs text-muted-foreground font-mono">Easy</div>
+          <div className="text-xs text-foreground/35 font-mono">Easy</div>
         </div>
         <div className="p-4 rounded-xl border border-border/30 bg-card/20">
-          <div className="text-2xl font-bold text-amber-400">
+          <div className="text-2xl font-bold">
             {data.problems.medium}
           </div>
-          <div className="text-xs text-muted-foreground font-mono">Medium</div>
+          <div className="text-xs text-foreground/35 font-mono">Medium</div>
         </div>
         <div className="p-4 rounded-xl border border-border/30 bg-card/20">
-          <div className="text-2xl font-bold text-red-400">
+          <div className="text-2xl font-bold">
             {data.problems.hard}
           </div>
-          <div className="text-xs text-muted-foreground font-mono">Hard</div>
+          <div className="text-xs text-foreground/35 font-mono">Hard</div>
         </div>
       </div>
 
@@ -334,19 +308,19 @@ function LeetCodeSection() {
       <div className="grid grid-cols-2 gap-4">
         <div className="p-4 rounded-xl border border-border/30 bg-card/20">
           <div className="flex items-center gap-2">
-            <Code2 className="h-4 w-4 text-muted-foreground" />
+            <Code2 className="h-4 w-4 text-foreground/35" />
             <span className="text-xl font-bold">{data.problems.total}</span>
           </div>
-          <div className="text-xs text-muted-foreground font-mono">Total Solved</div>
+          <div className="text-xs text-foreground/35 font-mono">Total Solved</div>
         </div>
         <div className="p-4 rounded-xl border border-border/30 bg-card/20">
           <div className="flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-muted-foreground" />
+            <Trophy className="h-4 w-4 text-foreground/35" />
             <span className="text-xl font-bold">
-              {data.rating > 0 ? data.rating : "—"}
+              {data.rating > 0 ? Math.round(data.rating) : "—"}
             </span>
           </div>
-          <div className="text-xs text-muted-foreground font-mono">
+          <div className="text-xs text-foreground/35 font-mono">
             {data.globalRanking > 0
               ? `#${data.globalRanking.toLocaleString()} Global`
               : "Contest Rating"}
@@ -357,7 +331,7 @@ function LeetCodeSection() {
       {/* Recent submissions */}
       {data.recentSubmissions.length > 0 && (
         <div>
-          <h4 className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-3">
+          <h4 className="text-xs font-mono text-foreground/30 uppercase tracking-[0.12em] mb-3">
             Recent Solutions
           </h4>
           <div className="space-y-2 max-h-[280px] overflow-y-auto pr-2">
@@ -370,12 +344,12 @@ function LeetCodeSection() {
                 className="flex items-center justify-between p-3 rounded-xl border border-border/30 bg-card/20"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="shrink-0 w-2 h-2 rounded-full bg-emerald-400" />
+                  <div className="shrink-0 w-2 h-2 rounded-full bg-foreground/20" />
                   <span className="text-sm truncate">
                     {sub.title.replace(/[-_]/g, " ")}
                   </span>
                 </div>
-                <span className="text-xs text-muted-foreground font-mono shrink-0 ml-2">
+                <span className="text-xs text-foreground/25 font-mono shrink-0 ml-2">
                   {formatTimeAgo(
                     new Date(sub.timestamp * 1000).toISOString()
                   )}
@@ -394,24 +368,23 @@ export default function Activity() {
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   return (
-    <section id="activity" ref={sectionRef} className="py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-8">
+    <section id="activity" ref={sectionRef} className="py-28 sm:py-36">
+      <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section header */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="mb-12"
+          transition={{ duration: 0.6 }}
+          className="mb-16"
         >
-          <span className="font-mono text-xs text-muted-foreground tracking-widest uppercase block mb-3">
-            Engineering Activity
+          <span className="font-mono text-xs text-foreground/35 tracking-[0.15em] uppercase block mb-3">
+            Activity
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em]">
             Live data dashboard
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-lg">
-            Real-time statistics from GitHub and LeetCode, fetched directly
-            from their APIs.
+          <p className="mt-3 text-foreground/45 max-w-lg">
+            Live statistics from GitHub and LeetCode.
           </p>
         </motion.div>
 

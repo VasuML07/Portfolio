@@ -4,40 +4,21 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 
-interface SkillCategory {
-  title: string;
-  skills: string[];
-}
-
-const SKILL_CATEGORIES: SkillCategory[] = [
+const BUILD_AREAS = [
   {
-    title: "AI / Machine Learning",
-    skills: [
-      "Python",
-      "NumPy",
-      "Pandas",
-      "Scikit-learn",
-      "TensorFlow",
-      "Neural Networks",
-      "Deep Learning",
-      "NLP",
-    ],
+    title: "Machine Learning Systems",
+    description: "Neural networks, NLP pipelines, model experimentation, and optimization. Building from first principles to understand what happens beneath the abstraction.",
+    items: ["Neural Networks", "NLP Pipelines", "Model Experimentation", "Optimization"],
   },
   {
-    title: "Software Engineering",
-    skills: [
-      "TypeScript",
-      "JavaScript",
-      "React",
-      "Next.js",
-      "REST APIs",
-      "Git",
-      "Node.js",
-    ],
+    title: "Software Products",
+    description: "Full-stack applications, REST APIs, and developer tools. Focused on clean architecture, performance, and maintainability.",
+    items: ["Full-Stack Applications", "REST APIs", "Developer Tools", "Frontend Engineering"],
   },
   {
-    title: "Data & Tools",
-    skills: ["Linux", "Jupyter", "Matplotlib", "SQL", "Tailwind CSS", "Figma"],
+    title: "Foundations",
+    description: "Data structures, algorithms, and system thinking. The fundamentals that inform every engineering decision.",
+    items: ["Data Structures", "Algorithms", "System Thinking", "First Principles"],
   },
 ];
 
@@ -46,55 +27,53 @@ export default function Skills() {
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   return (
-    <section id="skills" ref={sectionRef} className="py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        {/* Section header */}
+    <section id="skills" ref={sectionRef} className="py-28 sm:py-36">
+      <div className="mx-auto max-w-5xl px-6 sm:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="mb-12"
+          transition={{ duration: 0.6 }}
+          className="mb-16"
         >
-          <span className="font-mono text-xs text-muted-foreground tracking-widest uppercase block mb-3">
-            Skills & Technologies
+          <span className="font-mono text-xs text-foreground/35 tracking-[0.15em] uppercase block mb-3">
+            What I Build
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            Tools I work with
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em]">
+            Areas of focus
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-lg">
-            A focused set of technologies that I use to build machine learning
-            systems and software products.
-          </p>
         </motion.div>
 
-        {/* Skill categories */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="space-y-6"
         >
-          {SKILL_CATEGORIES.map((category) => (
-            <motion.div key={category.title} variants={staggerItem}>
-              <div className="mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  <h3 className="text-sm font-semibold tracking-tight">
-                    {category.title}
+          {BUILD_AREAS.map((area) => (
+            <motion.div
+              key={area.title}
+              variants={staggerItem}
+              className="group relative p-6 sm:p-8 rounded-2xl border border-border/40 hover:border-border/60 bg-card/30 transition-colors duration-500"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-8">
+                <div className="sm:w-64 shrink-0">
+                  <h3 className="text-base font-semibold tracking-tight mb-1">
+                    {area.title}
                   </h3>
+                  <p className="text-sm text-foreground/40 leading-relaxed">
+                    {area.description}
+                  </p>
                 </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {category.skills.map((skill) => (
-                  <motion.span
-                    key={skill}
-                    whileHover={{ y: -2, scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="px-3 py-1.5 text-sm font-mono text-muted-foreground border border-border/50 rounded-lg bg-card/30 hover:border-border hover:text-foreground transition-colors cursor-default"
-                  >
-                    {skill}
-                  </motion.span>
-                ))}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {area.items.map((item) => (
+                    <span
+                      key={item}
+                      className="px-3 py-1.5 text-xs font-mono text-foreground/50 border border-border/30 rounded-full hover:border-border/50 hover:text-foreground/70 transition-colors duration-300"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
             </motion.div>
           ))}

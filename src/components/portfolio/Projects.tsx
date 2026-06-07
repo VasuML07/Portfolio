@@ -2,67 +2,106 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 
 interface Project {
+  number: string;
   name: string;
-  description: string;
+  tagline: string;
   problem: string;
   approach: string;
-  implementation: string;
-  outcome: string;
+  impact: string;
+  keyLearning: string;
   techStack: string[];
   url: string;
 }
 
 const PROJECTS: Project[] = [
   {
+    number: "01",
     name: "Neural Networks From Scratch",
-    description:
-      "A deep learning framework built entirely with NumPy to understand the internals of neural network training.",
+    tagline:
+      "A deep learning framework built entirely with NumPy — designed to understand training, optimization, and backpropagation from the ground up.",
     problem:
-      "Most practitioners use high-level frameworks like PyTorch or TensorFlow without understanding what happens under the hood. The goal was to build intuition about how backpropagation, gradient descent, and neural network training actually work at the mathematical level.",
+      "Most machine learning projects rely on frameworks such as TensorFlow or PyTorch, making it difficult to understand how training, optimization, and backpropagation actually work. I wanted to learn what happens inside a neural network rather than simply using existing tools.",
     approach:
-      "Started from the fundamentals — implementing dense layers, activation functions (sigmoid, ReLU, softmax), forward propagation, and loss computation. Then built backward propagation using calculus chain rule, implementing gradient computation for each layer type.",
-    implementation:
-      "Built in pure NumPy with modular architecture supporting arbitrary layer stacking. Implemented SGD and mini-batch gradient descent. Created training loops with epoch tracking and loss monitoring.",
-    outcome:
-      "Gained deep understanding of gradient flow, vanishing gradients, and the mechanics that power modern deep learning. The framework supports multi-layer networks and can train on standard classification tasks.",
-    techStack: ["Python", "NumPy", "Deep Learning", "Mathematics"],
+      "I designed and implemented a neural network from scratch using only NumPy. The project includes forward propagation, backpropagation, Adam optimizer, training and validation tracking, model persistence, and experiment management. Instead of focusing on benchmark accuracy, the goal was to build a transparent system where every mathematical operation could be inspected and understood.",
+    impact:
+      "Applied the framework to a real-world fraud detection problem using the Credit Card Fraud Detection dataset containing over 284,000 transactions. Implemented ROC-based threshold tuning and F1-score evaluation to address severe class imbalance. The project provided a practical understanding of optimization, gradient flow, model evaluation, and neural network training mechanics.",
+    keyLearning:
+      "Understanding the internals of machine learning systems creates stronger engineering intuition than relying solely on frameworks.",
+    techStack: ["NumPy", "Python", "Deep Learning", "Machine Learning", "Fraud Detection", "Adam Optimizer"],
     url: "https://github.com/VasuML07/NeuralNetworkfromscratch",
   },
   {
+    number: "02",
     name: "Fake Job Prediction System",
-    description:
-      "An NLP pipeline to identify and classify fraudulent job postings using text preprocessing and ML classification.",
+    tagline:
+      "An end-to-end NLP pipeline that classifies job postings as legitimate or fraudulent using text preprocessing and machine learning.",
     problem:
-      "Fake job postings are a growing problem that costs job seekers time and can expose them to scams. Existing solutions were limited in accuracy and transparency.",
+      "Online job platforms contain fraudulent listings designed to collect personal information or scam applicants. Manually identifying suspicious postings is difficult because fraudulent listings often resemble legitimate opportunities.",
     approach:
-      "Built a complete NLP pipeline starting from raw text data. Applied text cleaning, tokenization, and feature extraction using TF-IDF vectorization to convert job descriptions into numerical representations suitable for ML models.",
-    implementation:
-      "Implemented multiple classification algorithms to compare performance. Used text preprocessing techniques including stopword removal, lemmatization, and feature selection. Built evaluation metrics and cross-validation for robust assessment.",
-    outcome:
-      "Created a functional classification system that can flag potentially fraudulent job postings. The pipeline is modular and can be extended with more advanced NLP techniques like word embeddings or transformer models.",
-    techStack: ["Python", "NLP", "Scikit-learn", "TF-IDF", "Pandas"],
+      "Built an end-to-end machine learning pipeline that transforms job descriptions into numerical representations using TF-IDF vectorization and classifies them using a trained machine learning model. Pipeline: Text Input → Preprocessing → TF-IDF → Classification → Prediction → Legitimate or Fraudulent",
+    impact:
+      "Created a complete NLP workflow from data preprocessing to deployment. The project demonstrates practical experience with text preprocessing, feature engineering, TF-IDF vectorization, model training, web deployment, and real-time inference. The system provides immediate classification results for user-submitted job descriptions.",
+    keyLearning:
+      "In NLP systems, feature engineering and data preparation often contribute more to model quality than the choice of classifier.",
+    techStack: ["Python", "Scikit-learn", "TF-IDF", "NLP", "Streamlit", "Machine Learning"],
     url: "https://github.com/VasuML07/fakeprediction",
   },
   {
+    number: "03",
     name: "Weather Application",
-    description:
-      "A responsive weather dashboard with real-time API integration, focused on clean frontend engineering.",
+    tagline:
+      "A responsive weather dashboard built with minimal architecture — HTML, CSS, and JavaScript only.",
     problem:
-      "Needed a practical project to develop frontend engineering skills — handling async data, managing state, building responsive layouts, and creating good UX.",
+      "Many modern applications depend heavily on frameworks even for simple use cases. I wanted to build a responsive weather application using a minimal architecture while maintaining performance and maintainability.",
     approach:
-      "Built a weather application that fetches real-time data from weather APIs. Focused on creating a clean, responsive interface with proper loading states, error handling, and intuitive UX patterns.",
-    implementation:
-      "Implemented API integration with proper error handling and loading states. Built responsive layouts that work across screen sizes. Applied modern frontend patterns for component composition and state management.",
-    outcome:
-      "Delivered a fully functional weather dashboard with real-time data, search functionality, and responsive design. The project strengthened frontend engineering fundamentals.",
-    techStack: ["JavaScript", "REST APIs", "Responsive Design", "HTML/CSS"],
+      "Created a weather dashboard using only HTML, CSS, and JavaScript. The application follows a separation-of-concerns architecture.",
+    impact:
+      "Built a production-ready frontend application capable of displaying real-time weather data, temperature, humidity, wind speed, weather conditions, and location information. The project demonstrates understanding of asynchronous programming, API integration, browser-side architecture, and responsive interface design.",
+    keyLearning:
+      "Simple architectures are often easier to maintain, debug, and scale than unnecessarily complex solutions.",
+    techStack: ["JavaScript", "HTML", "CSS", "REST APIs", "Weather APIs", "Responsive Design"],
     url: "https://github.com/VasuML07/weather-app",
   },
 ];
+
+function TerminalMockup({ project }: { project: Project }) {
+  return (
+    <div className="rounded-xl border border-border/40 bg-card/50 overflow-hidden">
+      {/* Terminal header */}
+      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-border/30">
+        <div className="w-2.5 h-2.5 rounded-full bg-foreground/15" />
+        <div className="w-2.5 h-2.5 rounded-full bg-foreground/15" />
+        <div className="w-2.5 h-2.5 rounded-full bg-foreground/15" />
+        <span className="ml-2 text-[10px] font-mono text-foreground/25">{project.name.toLowerCase().replace(/\s+/g, "-")}</span>
+      </div>
+      {/* Terminal body */}
+      <div className="p-4 space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono text-foreground/20">$</span>
+          <span className="text-[11px] font-mono text-foreground/35">git clone {project.url.split("github.com/")[1]}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono text-foreground/20">$</span>
+          <span className="text-[11px] font-mono text-foreground/35">cd {project.name.toLowerCase().replace(/\s+/g, "-")}</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {project.techStack.slice(0, 4).map((tech) => (
+            <span
+              key={tech}
+              className="px-2 py-0.5 text-[10px] font-mono text-foreground/25 border border-border/20 rounded"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const [expanded, setExpanded] = useState(false);
@@ -71,40 +110,55 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     <motion.div
       variants={staggerItem}
       layout
-      className="group relative rounded-2xl border border-border/50 bg-card/30 hover:border-border transition-all glow-border overflow-hidden"
+      className="rounded-2xl border border-border/40 bg-card/30 hover:border-border/60 transition-colors duration-500 overflow-hidden"
     >
       <motion.div layout="position" className="p-6 sm:p-8">
-        {/* Header */}
+        {/* Top: Number + Title */}
         <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <span className="font-mono text-xs text-muted-foreground mb-2 block">
-              {String(index + 1).padStart(2, "0")}
+          <div className="flex items-start gap-4 sm:gap-6">
+            <span className="font-mono text-xs text-foreground/25 mt-1 shrink-0">
+              {project.number}
             </span>
-            <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
-              {project.name}
-            </h3>
+            <div>
+              <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.02em]">
+                {project.name}
+              </h3>
+              <p className="text-sm text-foreground/45 leading-relaxed mt-2 max-w-xl">
+                {project.tagline}
+              </p>
+            </div>
           </div>
           <a
             href={project.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 mt-1 p-2 rounded-lg border border-border/50 hover:border-border transition-colors text-muted-foreground hover:text-foreground"
+            className="shrink-0 mt-1 p-2 rounded-lg border border-border/40 hover:border-border transition-colors text-foreground/30 hover:text-foreground"
           >
             <ArrowUpRight className="h-4 w-4" />
           </a>
         </div>
 
-        {/* Description */}
-        <p className="text-muted-foreground leading-relaxed mb-6">
-          {project.description}
-        </p>
+        {/* Visual + Tech row on desktop */}
+        <div className="hidden sm:grid sm:grid-cols-2 gap-6 mb-6">
+          <TerminalMockup project={project} />
+          <div className="flex flex-wrap items-end content-end gap-2">
+            {project.techStack.map((tech) => (
+              <span
+                key={tech}
+                className="px-2.5 py-1 text-[11px] font-mono text-foreground/45 border border-border/30 rounded-md hover:border-border/50 hover:text-foreground/60 transition-colors"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
 
-        {/* Tech stack */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        {/* Tech stack on mobile */}
+        <div className="sm:hidden flex flex-wrap gap-2 mb-4">
           {project.techStack.map((tech) => (
             <span
               key={tech}
-              className="px-2.5 py-1 text-xs font-mono text-muted-foreground border border-border/50 rounded-md bg-card/50"
+              className="px-2.5 py-1 text-[11px] font-mono text-foreground/45 border border-border/30 rounded-md"
             >
               {tech}
             </span>
@@ -114,14 +168,14 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         {/* Expand toggle */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group/expand"
+          className="flex items-center gap-2 text-sm text-foreground/40 hover:text-foreground/70 transition-colors"
         >
           <span>{expanded ? "Show less" : "Read case study"}</span>
           <motion.div
             animate={{ rotate: expanded ? 180 : 0 }}
             transition={{ duration: 0.2 }}
           >
-            <ChevronDown className="h-4 w-4" />
+            <ChevronDown className="h-3.5 w-3.5" />
           </motion.div>
         </button>
 
@@ -137,35 +191,35 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             >
               <div className="mt-6 space-y-6 border-t border-border/30 pt-6">
                 <div>
-                  <h4 className="text-xs font-mono text-emerald-400/80 uppercase tracking-wider mb-2">
+                  <h4 className="text-xs font-mono text-foreground/30 uppercase tracking-[0.12em] mb-2">
                     Problem
                   </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-foreground/50 leading-relaxed">
                     {project.problem}
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-xs font-mono text-emerald-400/80 uppercase tracking-wider mb-2">
+                  <h4 className="text-xs font-mono text-foreground/30 uppercase tracking-[0.12em] mb-2">
                     Approach
                   </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-foreground/50 leading-relaxed">
                     {project.approach}
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-xs font-mono text-emerald-400/80 uppercase tracking-wider mb-2">
-                    Implementation
+                  <h4 className="text-xs font-mono text-foreground/30 uppercase tracking-[0.12em] mb-2">
+                    Impact
                   </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {project.implementation}
+                  <p className="text-sm text-foreground/50 leading-relaxed">
+                    {project.impact}
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-xs font-mono text-emerald-400/80 uppercase tracking-wider mb-2">
-                    Outcome
+                  <h4 className="text-xs font-mono text-foreground/30 uppercase tracking-[0.12em] mb-2">
+                    Key Learning
                   </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {project.outcome}
+                  <p className="text-sm text-foreground/50 leading-relaxed italic">
+                    {project.keyLearning}
                   </p>
                 </div>
               </div>
@@ -182,22 +236,22 @@ export default function Projects() {
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   return (
-    <section id="projects" ref={sectionRef} className="py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-8">
+    <section id="projects" ref={sectionRef} className="py-28 sm:py-36">
+      <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section header */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="mb-12"
+          transition={{ duration: 0.6 }}
+          className="mb-16"
         >
-          <span className="font-mono text-xs text-muted-foreground tracking-widest uppercase block mb-3">
+          <span className="font-mono text-xs text-foreground/35 tracking-[0.15em] uppercase block mb-3">
             Projects
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em]">
             Selected work
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-lg">
+          <p className="mt-3 text-foreground/45 max-w-lg">
             Projects that represent my approach to engineering — understanding
             systems deeply before building on top of them.
           </p>
@@ -208,7 +262,7 @@ export default function Projects() {
           variants={staggerContainer}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="space-y-4"
+          className="space-y-5"
         >
           {PROJECTS.map((project, index) => (
             <ProjectCard key={project.name} project={project} index={index} />

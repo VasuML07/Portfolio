@@ -68,17 +68,16 @@ function CopyButton({ value }: { value: string }) {
   };
 
   return (
-    <motion.button
+    <button
       onClick={handleCopy}
-      whileTap={{ scale: 0.9 }}
-      className="p-2 rounded-lg border border-border/50 hover:border-border transition-colors text-muted-foreground hover:text-foreground"
+      className="p-2 rounded-lg border border-border/40 hover:border-border/60 transition-colors text-foreground/35 hover:text-foreground/60"
     >
       {copied ? (
-        <Check className="h-3.5 w-3.5 text-emerald-400" />
+        <Check className="h-3.5 w-3.5 text-foreground/50" />
       ) : (
         <Copy className="h-3.5 w-3.5" />
       )}
-    </motion.button>
+    </button>
   );
 }
 
@@ -94,16 +93,17 @@ function ContactCard({ contact }: { contact: ContactItem }) {
       className="contents"
     >
       <motion.div
-        whileHover={{ y: -2 }}
-        className="group relative p-6 rounded-2xl border border-border/50 bg-card/30 hover:border-border transition-all glow-border cursor-pointer"
+        whileHover={{ y: 1 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="group relative p-6 rounded-2xl border border-border/40 hover:border-border/70 bg-card/30 transition-colors duration-300 cursor-pointer"
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl border border-border/30 bg-card/50 text-muted-foreground group-hover:text-foreground transition-colors">
+            <div className="p-3 rounded-xl border border-border/30 bg-card/50 text-foreground/35 group-hover:text-foreground/60 transition-colors">
               {contact.icon}
             </div>
             <div>
-              <div className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1">
+              <div className="text-xs font-mono text-foreground/35 uppercase tracking-[0.12em] mb-1">
                 {contact.label}
               </div>
               <div className="text-sm font-medium">{contact.value}</div>
@@ -114,7 +114,7 @@ function ContactCard({ contact }: { contact: ContactItem }) {
               <CopyButton value={contact.copyValue || ""} />
             )}
             {isLink && (
-              <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+              <ArrowUpRight className="h-4 w-4 text-foreground/25 opacity-0 group-hover:opacity-100 transition-opacity" />
             )}
           </div>
         </div>
@@ -128,24 +128,23 @@ export default function Contact() {
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   return (
-    <section id="contact" ref={sectionRef} className="py-24 sm:py-32">
-      <div className="mx-auto max-w-6xl px-6 sm:px-8">
+    <section id="contact" ref={sectionRef} className="py-28 sm:py-36">
+      <div className="mx-auto max-w-5xl px-6 sm:px-8">
         {/* Section header */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="mb-12"
+          transition={{ duration: 0.6 }}
+          className="mb-16"
         >
-          <span className="font-mono text-xs text-muted-foreground tracking-widest uppercase block mb-3">
+          <span className="font-mono text-xs text-foreground/35 tracking-[0.15em] uppercase block mb-3">
             Contact
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            Get in touch
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em]">
+            Let&apos;s Build Something Useful.
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-lg">
-            Interested in collaborating, discussing ML systems, or just want to
-            connect? I&apos;m always open to conversations.
+          <p className="mt-3 text-foreground/45 max-w-lg">
+            Open to internships, software engineering opportunities, AI/ML projects, research collaborations, and interesting technical conversations.
           </p>
         </motion.div>
 
@@ -170,7 +169,7 @@ export default function Contact() {
           transition={{ delay: 0.5, duration: 0.5 }}
           className="mt-24 pt-8 border-t border-border/30 text-center"
         >
-          <p className="text-xs text-muted-foreground font-mono">
+          <p className="text-xs text-foreground/25 font-mono">
             Designed &amp; built by Avinash &middot; {new Date().getFullYear()}
           </p>
         </motion.div>
