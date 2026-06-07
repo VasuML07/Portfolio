@@ -15,16 +15,27 @@ query userProfile($username: String!) {
     }
     profile {
       ranking
+      userAvatar
+      realName
+      aboutMe
     }
     contestBadge {
       name
+    }
+    userCalendar {
+      submissionCalendar
     }
   }
   userContestRanking(username: $username) {
     rating
     globalRanking
+    attendedContestsCount
+    topPercentage
+    badge {
+      name
+    }
   }
-  recentAcSubmissionList(username: $username, limit: 10) {
+  recentAcSubmissionList(username: $username, limit: 20) {
     title
     titleSlug
     timestamp
@@ -51,6 +62,15 @@ async function fetchWithTimeout(
   }
 }
 
+function formatRating(raw: number): number {
+  return Math.round(raw);
+}
+
+function formatRanking(raw: number): string {
+  if (raw <= 0) return "—";
+  return `#${raw.toLocaleString("en-US")}`;
+}
+
 export async function GET() {
   try {
     const response = await fetchWithTimeout(
@@ -75,7 +95,7 @@ export async function GET() {
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: "Failed to fetch LeetCode data" },
+        { error: "Failed to fetch LeetCode data", source: "leetcode" },
         { status: response.status }
       );
     }
@@ -88,7 +108,7 @@ export async function GET() {
 
     if (!matchedUser) {
       return NextResponse.json(
-        { error: "User not found on LeetCode" },
+        { error: "User not found on LeetCode", source: "leetcode" },
         { status: 404 }
       );
     }
@@ -102,19 +122,41 @@ export async function GET() {
       total: submissionStats.reduce((sum: number, s: { count: number }) => sum + s.count, 0),
     };
 
+    // Parse submission calendar for heatmap
+    // submissionCalendar is a JSON string: {"1614556800": 3, "1614643200": 1, ...}
+    let heatmap: Record<string, number> = {};
+    if (matchedUser.userCalendar?.submissionCalendar) {
+      try {
+        heatmap = JSON.parse(matchedUser.userCalendar.submissionCalendar);
+      } catch {
+        // If parsing fails, heatmap stays empty — no fake data
+      }
+    }
+
     return NextResponse.json({
       username: LEETCODE_USERNAME,
+      profile: {
+        avatar: matchedUser.profile?.userAvatar || null,
+        realName: matchedUser.profile?.realName || null,
+        aboutMe: matchedUser.profile?.aboutMe || null,
+        profileRanking: matchedUser.profile?.ranking || 0,
+      },
       problems,
-      ranking: matchedUser.profile?.ranking || 0,
-      rating: contestRanking?.rating || 0,
-      globalRanking: contestRanking?.globalRanking || 0,
-      contestBadge: matchedUser.contestBadge?.name || null,
+      contest: {
+        rating: contestRanking?.rating ? formatRating(contestRanking.rating) : 0,
+        globalRanking: contestRanking?.globalRanking || 0,
+        globalRankingFormatted: formatRanking(contestRanking?.globalRanking || 0),
+        attendedContestsCount: contestRanking?.attendedContestsCount || 0,
+        topPercentage: contestRanking?.topPercentage || 0,
+        badge: contestRanking?.badge?.name || matchedUser.contestBadge?.name || null,
+      },
+      heatmap,
       recentSubmissions: recentSubmissions || [],
     });
   } catch (error) {
     const message = error instanceof Error && error.name === "AbortError"
       ? "LeetCode API request timed out"
       : "Internal server error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: message, source: "leetcode" }, { status: 500 });
   }
 }
