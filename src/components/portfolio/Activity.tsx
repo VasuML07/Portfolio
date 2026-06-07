@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { staggerContainer, staggerItem } from "@/lib/animations";
+import { staggerContainer } from "@/lib/animations";
 
 interface GitHubRepo {
   id: number;
@@ -71,11 +71,6 @@ interface LeetCodeData {
     badge: string | null;
   };
   heatmap: Record<string, number>;
-  recentSubmissions: {
-    title: string;
-    titleSlug: string;
-    timestamp: string;
-  }[];
 }
 
 const LANGUAGE_COLORS: Record<string, string> = {
@@ -93,20 +88,6 @@ const LANGUAGE_COLORS: Record<string, string> = {
   Rust: "text-orange-600",
   Shell: "text-green-300",
 };
-
-function formatTimeAgo(timestamp: string): string {
-  const now = new Date();
-  const date = new Date(timestamp);
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-  if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
-  return `${Math.floor(diffDays / 365)}y ago`;
-}
 
 function DataUnavailable({ message }: { message: string }) {
   return (
@@ -450,12 +431,6 @@ function LeetCodeSection() {
           <Skeleton className="h-4 w-32 mb-3" />
           <Skeleton className="h-20 w-full" />
         </div>
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="p-4 rounded-xl border border-border/30">
-            <Skeleton className="h-5 w-32 mb-2" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-        ))}
       </div>
     );
   }
@@ -529,43 +504,6 @@ function LeetCodeSection() {
       {/* Contribution Heatmap (from live submission data) */}
       {Object.keys(data.heatmap).length > 0 && (
         <ContributionHeatmap heatmap={data.heatmap} />
-      )}
-
-      {/* Recent submissions (all from live API) */}
-      {data.recentSubmissions.length > 0 && (
-        <div>
-          <h4 className="text-xs font-mono text-foreground/30 uppercase tracking-[0.12em] mb-3">
-            Recent Solutions
-          </h4>
-          <div className="space-y-2 max-h-[280px] overflow-y-auto pr-2">
-            {data.recentSubmissions.map((sub, i) => (
-              <motion.div
-                key={`${sub.titleSlug}-${i}`}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="flex items-center justify-between p-3 rounded-xl border border-border/30 bg-card/20"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="shrink-0 w-2 h-2 rounded-full bg-foreground/20" />
-                  <a
-                    href={`https://leetcode.com/problems/${sub.titleSlug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm truncate hover:text-foreground/70 transition-colors"
-                  >
-                    {sub.title.replace(/[-_]/g, " ")}
-                  </a>
-                </div>
-                <span className="text-xs text-foreground/25 font-mono shrink-0 ml-2">
-                  {formatTimeAgo(
-                    new Date(Number(sub.timestamp) * 1000).toISOString()
-                  )}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
       )}
 
       {/* Profile link */}

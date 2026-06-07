@@ -35,11 +35,6 @@ query userProfile($username: String!) {
       name
     }
   }
-  recentAcSubmissionList(username: $username, limit: 20) {
-    title
-    titleSlug
-    timestamp
-  }
 }
 `;
 
@@ -104,7 +99,6 @@ export async function GET() {
 
     const matchedUser = data.data?.matchedUser;
     const contestRanking = data.data?.userContestRanking;
-    const recentSubmissions = data.data?.recentAcSubmissionList;
 
     if (!matchedUser) {
       return NextResponse.json(
@@ -151,7 +145,6 @@ export async function GET() {
         badge: contestRanking?.badge?.name || matchedUser.contestBadge?.name || null,
       },
       heatmap,
-      recentSubmissions: recentSubmissions || [],
     });
   } catch (error) {
     const message = error instanceof Error && error.name === "AbortError"
