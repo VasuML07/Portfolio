@@ -113,7 +113,7 @@ export async function GET() {
       easy: submissionStats.find((s: { difficulty: string }) => s.difficulty === "Easy")?.count || 0,
       medium: submissionStats.find((s: { difficulty: string }) => s.difficulty === "Medium")?.count || 0,
       hard: submissionStats.find((s: { difficulty: string }) => s.difficulty === "Hard")?.count || 0,
-      total: submissionStats.reduce((sum: number, s: { count: number }) => sum + s.count, 0),
+      total: submissionStats.find((s: { difficulty: string }) => s.difficulty === "All")?.count || 0,
     };
 
     // Parse submission calendar for heatmap
