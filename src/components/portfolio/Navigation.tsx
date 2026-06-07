@@ -55,11 +55,6 @@ export default function Navigation() {
     return () => observer.disconnect();
   }, []);
 
-  // Force dark theme on first load
-  useEffect(() => {
-    setTheme("dark");
-  }, [setTheme]);
-
   const scrollToSection = (href: string) => {
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });

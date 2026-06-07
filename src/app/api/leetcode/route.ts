@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 const LEETCODE_USERNAME = "coder_2028";
+const CACHE_DURATION = 1800; // 30 minutes
 
 const QUERY = `
 query userProfile($username: String!) {
@@ -31,26 +32,48 @@ query userProfile($username: String!) {
 }
 `;
 
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit = {},
+  timeout = 10000
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    return response;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export async function GET() {
   try {
-    const response = await fetch("https://leetcode.com/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Origin: "https://leetcode.com",
-        Referer: "https://leetcode.com/",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({ query: QUERY, variables: { username: LEETCODE_USERNAME } }),
-      next: { revalidate: 1800 },
-      cache: "no-store",
-    });
+    const response = await fetchWithTimeout(
+      "https://leetcode.com/graphql",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Origin: "https://leetcode.com",
+          Referer: "https://leetcode.com/",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          query: QUERY,
+          variables: { username: LEETCODE_USERNAME },
+        }),
+        next: { revalidate: CACHE_DURATION },
+      }
+    );
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => "Unknown error");
-      console.error("LeetCode API HTTP error:", response.status, errorText);
       return NextResponse.json(
         { error: "Failed to fetch LeetCode data" },
         { status: response.status }
@@ -58,7 +81,6 @@ export async function GET() {
     }
 
     const data = await response.json();
-    console.log("LeetCode raw response:", JSON.stringify(data)?.slice(0, 500));
 
     const matchedUser = data.data?.matchedUser;
     const contestRanking = data.data?.userContestRanking;
@@ -90,10 +112,9 @@ export async function GET() {
       recentSubmissions: recentSubmissions || [],
     });
   } catch (error) {
-    console.error("LeetCode API error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    const message = error instanceof Error && error.name === "AbortError"
+      ? "LeetCode API request timed out"
+      : "Internal server error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

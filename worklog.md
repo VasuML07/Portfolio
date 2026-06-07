@@ -60,3 +60,31 @@ Stage Summary:
 - Live data: LeetCode (238 problems, 1435 rating, #599K ranking) + GitHub (19 repos, 6 stars, 3 languages)
 - Browser-verified: full page renders, case study expansion works, tabs work, no errors
 
+---
+Task ID: 3
+Agent: Main Agent
+Task: Critical data integrity and deployment readiness update
+
+Work Log:
+- Removed ALL hardcoded statistics from Highlights.tsx (was "120+", "18")
+- Rewrote Highlights to fetch live data from /api/github and /api/leetcode via useQuery
+- Highlights now shows: 238 (live LeetCode total), 19 (live GitHub repos), plus 2 static factual statements
+- Added loading skeletons for dynamic highlights while data loads
+- Dynamic cards only appear when data is available (no placeholder zeros)
+- GitHub API route: added 10s timeout via AbortController, removed debug console.log, fixed revalidation to 1800 (30 min)
+- LeetCode API route: added 10s timeout via AbortController, removed debug console.log
+- Activity section: changed error handling from "temporarily unavailable" text to return null (complete hide)
+- Added retry: 3 with exponential backoff (1s, 2s, 3s delays) to all useQuery instances
+- Added retry config to page-level QueryClient default options
+- Removed forceTheme useEffect from Navigation (caused hydration mismatch)
+- Added sitemap.ts for SEO
+- Verified: no console.log/console.debug statements remain, no typeof window/document hydration risks
+
+Stage Summary:
+- ZERO hardcoded/fake/placeholder statistics — all numerical data comes from live APIs
+- GitHub API: 10s timeout, 30-min cache, retry logic, graceful failure (component hides)
+- LeetCode API: 10s timeout, 30-min cache, retry logic, graceful failure (component hides)
+- Error handling: hide component completely on failure (never show error text or "0")
+- Highlights: dynamic cards from API data + loading skeletons + static factual items
+- ESLint clean, no runtime errors, hydration-safe
+

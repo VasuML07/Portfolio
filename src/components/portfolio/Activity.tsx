@@ -103,15 +103,13 @@ function GitHubSection() {
       return res.json();
     },
     staleTime: 1000 * 60 * 30,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(attempt * 1000, 5000),
   });
 
-  // Silently handle error — show minimal note
+  // Hide completely on error — never show broken UI
   if (isError) {
-    return (
-      <div className="py-12 text-center">
-        <p className="text-sm text-foreground/25 font-mono">GitHub data temporarily unavailable</p>
-      </div>
-    );
+    return null;
   }
 
   if (isLoading || !data) {
@@ -249,14 +247,13 @@ function LeetCodeSection() {
       return res.json();
     },
     staleTime: 1000 * 60 * 30,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(attempt * 1000, 5000),
   });
 
+  // Hide completely on error — never show broken UI
   if (isError) {
-    return (
-      <div className="py-12 text-center">
-        <p className="text-sm text-foreground/25 font-mono">LeetCode data temporarily unavailable</p>
-      </div>
-    );
+    return null;
   }
 
   if (isLoading || !data) {
